@@ -1,0 +1,45 @@
+{
+  "name": "be_event_mgmt_proj",
+  "version": "1.0.0",
+  "description": "This is a Online Event Management Portal , this is built using React for the frontend and Node.js with Express for the backend. The application allows user in organizing and managing events with features for event listings, ticket sales, and attendee registration",
+  "keywords": [
+    "express",
+    "mongoose",
+    "dotenv",
+    "cors",
+    "jsonwebtoken",
+    "bcryptjs",
+    "multer",
+    "stripe",
+    "nodemailer",
+    "nodemon",
+    "restfulapi"
+  ],
+  "homepage": "https://github.com/gurunathanb-rgb/be-eventmgmt-portal#readme",
+  "bugs": {
+    "url": "https://github.com/gurunathanb-rgb/be-eventmgmt-portal/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gurunathanb-rgb/be-eventmgmt-portal.git"
+  },
+  "license": "ISC",
+  "author": "Gurunathan Balakrishnan",
+  "type": "commonjs",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "jsonwebtoken": "^9.0.3",
+    "mongoose": "^9.9.1",
+    "multer": "^2.2.0",
+    "nodemailer": "^9.0.5",
+    "stripe": "^22.4.0"
+  }
+}
