@@ -9,11 +9,11 @@ const app = require("./app")
 mongoose
     .connect(MONGODB_URI)
     .then(()=>{
-        console.log('Connected to the Database')
+        console.log('📦 Core Database Layer Connected to MongoDB Storage Hub Successfully.')
         //Start the server
         app
             .listen(PORT, HOST, () =>{
-                console.log(`The server is running on http://${HOST}:${PORT}`)
+                console.log(`T🚀 System Processing Node Active on Environment URL Port Address: http://${HOST}:${PORT}`)
                 })
             .on('error', (error) => {
                 console.error('Error starting  the server', error.message)
@@ -21,5 +21,6 @@ mongoose
             })
     })
     .catch((error)=>{
-        console.error('Error connecting to the Database', error.message)
+        console.error('❌ Critical Error: Database engine connection failed initialization:', error.message)
+        process.exit(1);
     })

@@ -39,5 +39,6 @@ cancel the ticket if necesary
 ## npm install
 npm install express mongoose dotenv cors jsonwebtoken bcryptjs multer stripe nodemailer
 npm install --save-dev nodemon
+npm install -D nodemon 
 
 
