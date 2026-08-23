@@ -8,12 +8,34 @@ const generateToken = (id) => {
 };
 
 // 🌟 HELPER: Uniform cookie dispatch configuration option block
+// const sendTokenCookie = (res, token) => {
+//   res.cookie('token', token, {
+//     httpOnly: true,                 // Prevents client-side scripts from reading the cookie
+//     secure: process.env.NODE_ENV === 'production', // true in production (requires HTTPS)
+//     sameSite: 'strict',             // Protects against CSRF attacks
+//     maxAge: 30 * 24 * 60 * 60 * 1000 // 30 days calculation parameter match
+//   });
+// };
+
 const sendTokenCookie = (res, token) => {
   res.cookie('token', token, {
-    httpOnly: true,                 // Prevents client-side scripts from reading the cookie
-    secure: process.env.NODE_ENV === 'production', // true in production (requires HTTPS)
-    sameSite: 'strict',             // Protects against CSRF attacks
-    maxAge: 30 * 24 * 60 * 60 * 1000 // 30 days calculation parameter match
+    httpOnly: true,
+
+    // HTTPS is required for production
+    secure: process.env.NODE_ENV === 'production',
+
+    // Required because Netlify frontend and backend
+    // are on different sites/domains
+    sameSite:
+      process.env.NODE_ENV === 'production'
+        ? 'none'
+        : 'lax',
+
+    // 30 days
+    maxAge: 30 * 24 * 60 * 60 * 1000,
+
+    // Available to all API routes
+    path: '/'
   });
 };
 
@@ -98,16 +120,48 @@ exports.updateProfile = async (req, res) => {
 };
 
 // 🌟 ADDITION: Explicit logout route logic required for HTTP-Only setups
+// exports.logoutUser = async (req, res) => {
+//   try {
+//     res.cookie('token', '', {
+//       httpOnly: true,
+//       expires: new Date(0), // Instantly expires cookie storage parameter maps
+//       sameSite: 'strict',
+//       secure: process.env.NODE_ENV === 'production'
+//     });
+//     res.json({ message: 'Logged out cleanly and session token invalidated.' });
+//   } catch (error) {
+//     res.status(500).json({ message: error.message });
+//   }
+// };
 exports.logoutUser = async (req, res) => {
   try {
+
     res.cookie('token', '', {
       httpOnly: true,
-      expires: new Date(0), // Instantly expires cookie storage parameter maps
-      sameSite: 'strict',
-      secure: process.env.NODE_ENV === 'production'
+
+      secure:
+        process.env.NODE_ENV === 'production',
+
+      sameSite:
+        process.env.NODE_ENV === 'production'
+          ? 'none'
+          : 'lax',
+
+      expires: new Date(0),
+
+      path: '/'
     });
-    res.json({ message: 'Logged out cleanly and session token invalidated.' });
+
+    res.json({
+      message:
+        'Logged out cleanly and session token invalidated.'
+    });
+
   } catch (error) {
-    res.status(500).json({ message: error.message });
+
+    res.status(500).json({
+      message: error.message
+    });
+
   }
 };
