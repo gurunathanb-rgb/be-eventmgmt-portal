@@ -13,15 +13,16 @@ const {
 
 const transporter = nodemailer.createTransport({
 
-  host: EMAIL_HOST || 'smtp.gmail.com',
+  host: 'smtp.gmail.com',
 
-  port: Number(EMAIL_PORT) || 587,
+  port: 587,
+  secure: false,
 
-  secure: Number(EMAIL_PORT) === 465,
+  //secure: Number(EMAIL_PORT) === 465,
 
   // IMPORTANT:
   // Force IPv4 because Render is currently trying IPv6
-  family: 4,
+  //family: 4,
 
   auth: {
     user: EMAIL_USER,
