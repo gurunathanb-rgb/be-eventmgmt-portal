@@ -18,7 +18,7 @@ app.use('/api/bookings/webhook', bookingRoutes);
 app.use(cors({
   //origin: 'http://localhost:5173', // Your Vite frontend location URL string
    //origin: 'http://127.0.0.1:5173',
-   origin: 'https://be-eventmgmt-portal.onrender.com',
+   origin: 'https://fe-eventmgmt-portal.netlify.app',
   credentials: true,                // Enables passing secure HTTP-Only cookies
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
