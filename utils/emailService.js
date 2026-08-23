@@ -1,4 +1,5 @@
 const nodemailer = require('nodemailer');
+
 const {
   EMAIL_HOST,
   EMAIL_PORT,
@@ -11,16 +12,27 @@ const {
 // ============================================================
 
 const transporter = nodemailer.createTransport({
+
   host: EMAIL_HOST || 'smtp.gmail.com',
 
   port: Number(EMAIL_PORT) || 587,
 
   secure: Number(EMAIL_PORT) === 465,
 
+  // IMPORTANT:
+  // Force IPv4 because Render is currently trying IPv6
+  family: 4,
+
   auth: {
     user: EMAIL_USER,
     pass: EMAIL_PASS
-  }
+  },
+
+  // Connection timeout settings
+  connectionTimeout: 30000,
+  greetingTimeout: 30000,
+  socketTimeout: 30000
+
 });
 
 // ============================================================
