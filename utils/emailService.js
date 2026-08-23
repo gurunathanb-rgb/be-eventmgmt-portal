@@ -1,47 +1,135 @@
 const nodemailer = require('nodemailer');
-const { EMAIL_HOST, EMAIL_PORT, EMAIL_USER, EMAIL_PASS } = require('./config');
+const {
+  EMAIL_HOST,
+  EMAIL_PORT,
+  EMAIL_USER,
+  EMAIL_PASS
+} = require('./config');
 
-// Initialize the standalone SMTP transport client engine
+// ============================================================
+// SMTP TRANSPORT
+// ============================================================
+
 const transporter = nodemailer.createTransport({
-  host: EMAIL_HOST || 'smtp.gmail.com', // Defaults to Gmail SMTP server if left blank
-  port: Number(EMAIL_PORT) || 587,      // 587 for TLS STARTTLS securely wrapped channels
-  secure: false,                        // Use false for 587, true for port 465
+  host: EMAIL_HOST || 'smtp.gmail.com',
+
+  port: Number(EMAIL_PORT) || 587,
+
+  secure: Number(EMAIL_PORT) === 465,
+
   auth: {
-    user: EMAIL_USER,                   // Your company/personal email address profile
-    pass: EMAIL_PASS                    // 🌟 MUST BE A 16-CHARACTER GMAIL APP PASSWORD
+    user: EMAIL_USER,
+    pass: EMAIL_PASS
   }
 });
 
-/**
- * 🎟️ Sends an HTML Ticket confirmation email receipt upon successful checkout processing
- */
-/**
- * 🎟️ Sends an HTML Ticket confirmation email upon successful checkout
- */
-exports.sendTicketConfirmation = async (recipientEmail, ticketDetails) => {
+// ============================================================
+// VERIFY SMTP CONNECTION
+// ============================================================
 
-  // Format event date safely
-  let formattedDate = 'Date not available';
+transporter.verify((error, success) => {
 
-  if (ticketDetails.eventDate) {
-    const eventDate = new Date(ticketDetails.eventDate);
+  if (error) {
 
-    if (!isNaN(eventDate.getTime())) {
-      formattedDate = eventDate.toLocaleDateString('en-IN', {
-        day: '2-digit',
-        month: 'long',
-        year: 'numeric'
-      });
-    }
+    console.error(
+      '❌ SMTP CONNECTION FAILED:',
+      error.message
+    );
+
+  } else {
+
+    console.log(
+      '✅ SMTP SERVER READY FOR EMAILS'
+    );
+
   }
 
-  const mailOptions = {
-    from: `"EventPro.io Gateways" <${EMAIL_USER}>`,
-    to: recipientEmail,
+});
 
-    subject: `🎉 Ticket Confirmed: ${ticketDetails.eventTitle}`,
+// ============================================================
+// SEND TICKET CONFIRMATION
+// ============================================================
+
+exports.sendTicketConfirmation = async (
+  recipientEmail,
+  ticketDetails
+) => {
+
+  // ----------------------------------------------------------
+  // VALIDATE EMAIL CONFIGURATION
+  // ----------------------------------------------------------
+
+  if (!EMAIL_USER) {
+    throw new Error(
+      'EMAIL_USER is not configured in environment variables'
+    );
+  }
+
+  if (!EMAIL_PASS) {
+    throw new Error(
+      'EMAIL_PASS is not configured in environment variables'
+    );
+  }
+
+  if (!recipientEmail) {
+    throw new Error(
+      'Recipient email address is missing'
+    );
+  }
+
+
+  // ----------------------------------------------------------
+  // FORMAT EVENT DATE
+  // ----------------------------------------------------------
+
+  let formattedDate =
+    'Date not available';
+
+  if (ticketDetails.eventDate) {
+
+    const eventDate =
+      new Date(
+        ticketDetails.eventDate
+      );
+
+    if (
+      !isNaN(
+        eventDate.getTime()
+      )
+    ) {
+
+      formattedDate =
+        eventDate.toLocaleDateString(
+          'en-IN',
+          {
+            day: '2-digit',
+            month: 'long',
+            year: 'numeric'
+          }
+        );
+
+    }
+
+  }
+
+
+  // ----------------------------------------------------------
+  // EMAIL CONTENT
+  // ----------------------------------------------------------
+
+  const mailOptions = {
+
+    from:
+      `"EventPro.io Gateways" <${EMAIL_USER}>`,
+
+    to:
+      recipientEmail,
+
+    subject:
+      `🎉 Ticket Confirmed: ${ticketDetails.eventTitle}`,
 
     html: `
+
       <div style="
         font-family: Arial, sans-serif;
         max-width: 600px;
@@ -64,7 +152,8 @@ exports.sendTicketConfirmation = async (recipientEmail, ticketDetails) => {
           font-size: 14px;
           margin-top: 0;
         ">
-          Hi ${ticketDetails.name}, your pass is active and registered.
+          Hi ${ticketDetails.name || 'Customer'},
+          your pass is active and registered.
         </p>
 
         <div style="
@@ -79,10 +168,9 @@ exports.sendTicketConfirmation = async (recipientEmail, ticketDetails) => {
             margin: 0 0 15px 0;
             color: #0f172a;
           ">
-            ${ticketDetails.eventTitle}
+            ${ticketDetails.eventTitle || 'Event'}
           </h3>
 
-          <!-- Event Date -->
           <p style="
             margin: 6px 0;
             font-size: 13px;
@@ -91,7 +179,6 @@ exports.sendTicketConfirmation = async (recipientEmail, ticketDetails) => {
             ${formattedDate}
           </p>
 
-          <!-- Event Time -->
           <p style="
             margin: 6px 0;
             font-size: 13px;
@@ -100,7 +187,6 @@ exports.sendTicketConfirmation = async (recipientEmail, ticketDetails) => {
             ${ticketDetails.eventTime || 'Time not available'}
           </p>
 
-          <!-- Event Location -->
           <p style="
             margin: 6px 0;
             font-size: 13px;
@@ -115,13 +201,12 @@ exports.sendTicketConfirmation = async (recipientEmail, ticketDetails) => {
             margin: 15px 0;
           ">
 
-          <!-- Ticket Information -->
           <p style="
             margin: 6px 0;
             font-size: 13px;
           ">
             <b>🎟️ Admission Tier:</b>
-            ${ticketDetails.tier}
+            ${ticketDetails.tier || 'Ticket'}
           </p>
 
           <p style="
@@ -129,7 +214,7 @@ exports.sendTicketConfirmation = async (recipientEmail, ticketDetails) => {
             font-size: 13px;
           ">
             <b>👥 Quantity:</b>
-            ${ticketDetails.quantity} Seat(s)
+            ${ticketDetails.quantity || 0} Seat(s)
           </p>
 
           <p style="
@@ -137,7 +222,7 @@ exports.sendTicketConfirmation = async (recipientEmail, ticketDetails) => {
             font-size: 13px;
           ">
             <b>💰 Total Paid:</b>
-            Rs. ${ticketDetails.totalPaid}
+            Rs. ${ticketDetails.totalPaid || 0}
           </p>
 
           <p style="
@@ -146,7 +231,7 @@ exports.sendTicketConfirmation = async (recipientEmail, ticketDetails) => {
             color: #94a3b8;
           ">
             Transaction Reference:
-            ${ticketDetails.paymentId}
+            ${ticketDetails.paymentId || 'N/A'}
           </p>
 
         </div>
@@ -157,14 +242,17 @@ exports.sendTicketConfirmation = async (recipientEmail, ticketDetails) => {
           border-radius: 8px;
           margin-top: 15px;
         ">
+
           <p style="
             font-size: 12px;
             color: #1e40af;
             margin: 0;
             text-align: center;
           ">
-            Please present this digital ticket confirmation at the venue.
+            Please present this digital ticket confirmation
+            at the venue.
           </p>
+
         </div>
 
         <p style="
@@ -177,12 +265,21 @@ exports.sendTicketConfirmation = async (recipientEmail, ticketDetails) => {
         </p>
 
       </div>
+
     `
   };
 
+
+  // ----------------------------------------------------------
+  // SEND EMAIL
+  // ----------------------------------------------------------
+
   try {
 
-    const trackingInfo = await transporter.sendMail(mailOptions);
+    const trackingInfo =
+      await transporter.sendMail(
+        mailOptions
+      );
 
     console.log(
       `✉️ Confirmation email dispatched to ${recipientEmail}. MessageID: ${trackingInfo.messageId}`
@@ -194,8 +291,14 @@ exports.sendTicketConfirmation = async (recipientEmail, ticketDetails) => {
 
     console.error(
       `❌ Nodemailer execution fault routing to ${recipientEmail}:`,
-      err.message
+      err
     );
 
+    // IMPORTANT:
+    // Re-throw the error so bookingController
+    // can see that email sending failed.
+    throw err;
+
   }
+
 };
