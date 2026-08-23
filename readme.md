@@ -41,4 +41,31 @@ npm install express mongoose dotenv cors jsonwebtoken bcryptjs multer stripe nod
 npm install --save-dev nodemon
 npm install -D nodemon 
 
+##backend folder tree
+
+backend/
+│
+├── controllers/
+│   └── eventController.js
+│
+├── middleware/
+│   ├── authMiddleware.js
+│   └── uploadMiddleware.js
+│
+├── models/
+│   ├── Event.js
+│   ├── Booking.js
+│   └── User.js
+│
+├── routes/
+│   ├── eventRoutes.js
+│   ├── authRoutes.js
+│   └── ...
+│
+├── uploads/
+│   ├── images/
+│   └── videos/
+│
+├── app.js
+└── server.js
 

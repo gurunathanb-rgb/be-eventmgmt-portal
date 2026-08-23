@@ -1,6 +1,8 @@
 const express = require('express');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
+const path = require('path');
+
 const authRoutes = require('./routes/authRoutes')
 const eventRoutes= require('./routes/eventRoutes')
 const bookingRoutes = require('./routes/bookingRoutes')
@@ -14,12 +16,19 @@ app.use('/api/bookings/webhook', bookingRoutes);
 
 // 2. Global System Middlewares
 app.use(cors({
-  origin: 'http://localhost:5173', // Your Vite frontend location URL string
-  credentials: true                // Enables passing secure HTTP-Only cookies
+  //origin: 'http://localhost:5173', // Your Vite frontend location URL string
+   origin: 'http://127.0.0.1:5173',
+  credentials: true,                // Enables passing secure HTTP-Only cookies
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
 app.use(cookieParser());
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// STATIC UPLOAD FILES
+app.use('/uploads',express.static(path.join(__dirname, 'uploads')));
 
 // 3. API Route Registration Mapping
 app.use('/api/auth', authRoutes);

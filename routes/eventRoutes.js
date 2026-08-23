@@ -1,17 +1,128 @@
 const express = require('express');
+
 const router = express.Router();
+
 const eventController = require('../controllers/eventController');
-const { protect, authorize } = require('../middleware/authMiddleware');
 
-// Public catalog search lookup path
-router.get('/', eventController.getAllApprovedEvents);
+const {
+  protect,
+  authorize
+} = require('../middleware/authMiddleware');
 
-// Organizer or Administrator locked data mutations
-router.post('/create', protect, authorize('organizer', 'admin'), eventController.createEventListing);
-router.put('/:id/schedule', protect, authorize('organizer', 'admin'), eventController.updateEventSchedule);
+const upload = require('../middleware/uploadMiddleware');
 
-// Month-over-month performance aggregation graph pathway
-router.get('/monthly-analytics', protect, authorize('organizer', 'admin'), eventController.getMonthOverMonthRevenue);
+
+// ============================================================
+// PUBLIC APPROVED EVENTS
+// ============================================================
+
+router.get(
+  '/',
+  eventController.getAllApprovedEvents
+);
+
+
+// ============================================================
+// ORGANIZER / ADMIN EVENTS
+// ============================================================
+
+router.get(
+  '/my-events',
+  protect,
+  authorize('organizer', 'admin'),
+  eventController.getMyEvents
+);
+
+
+// ============================================================
+// CREATE EVENT
+// ============================================================
+
+router.post(
+  '/create',
+  protect,
+  authorize('organizer', 'admin'),
+
+  upload.fields([
+    {
+      name: 'image',
+      maxCount: 1
+    },
+    {
+      name: 'video',
+      maxCount: 1
+    }
+  ]),
+
+  eventController.createEventListing
+);
+
+
+// ============================================================
+// EDIT EVENT
+// ============================================================
+
+router.put(
+  '/:id/edit',
+
+  protect,
+  authorize('organizer', 'admin'),
+
+  upload.fields([
+    {
+      name: 'image',
+      maxCount: 1
+    },
+    {
+      name: 'video',
+      maxCount: 1
+    }
+  ]),
+
+  eventController.updateEvent
+);
+
+
+// ============================================================
+// UPDATE EVENT SCHEDULE
+// ============================================================
+
+router.put(
+  '/:id/schedule',
+
+  protect,
+  authorize('organizer', 'admin'),
+
+  eventController.updateEventSchedule
+);
+
+
+// ============================================================
+// MONTHLY REVENUE ANALYTICS
+// ============================================================
+
+router.get(
+  '/monthly-analytics',
+
+  protect,
+  authorize('organizer', 'admin'),
+
+  eventController.getMonthOverMonthRevenue
+);
+
+
+// ============================================================
+// EVENT SALES ANALYTICS
+// ============================================================
+
+router.get(
+  '/sales-analytics',
+
+  protect,
+  authorize('organizer', 'admin'),
+
+  eventController.getEventSalesAnalytics
+);
+
 
 module.exports = router;
-

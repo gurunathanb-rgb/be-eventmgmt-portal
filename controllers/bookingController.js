@@ -94,10 +94,20 @@ exports.confirmPaymentWebhook = async (req, res) => {
         if (typeof sendTicketConfirmation === 'function') {
           await sendTicketConfirmation(booking.attendeeDetails.email, {
             name: booking.attendeeDetails.fullName,
+
             eventTitle: event ? event.title : 'Event Pass',
+
+            // Event details
+            eventDate: event ? event.date : null,
+            eventTime: event ? event.time : null,
+            eventLocation: event ? event.location : null,
+
+            // Ticket details
             tier: booking.ticketTierName,
             quantity: booking.quantity,
             totalPaid: booking.totalPaid,
+
+            // Payment reference
             paymentId: intent.id
           });
         }

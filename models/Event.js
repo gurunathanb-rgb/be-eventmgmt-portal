@@ -70,8 +70,14 @@ const eventSchema = new mongoose.Schema(
       type: String,
       required: true
     },    // e.g., "Music", "Tech", "Business"
-    images: [{ type: String }],                    // Array of image URLs
-    videos: [{ type: String }],                    // Array of video promo URLs
+    images: [{ 
+      type: String,
+      default: [] 
+    }],                    // Array of image URLs
+    videos: [{ 
+      type: String,
+      default: [] 
+    }],                    // Array of video promo URLs
     ticketTiers: [ticketTierSchema],
     schedule: [scheduleSchema],
     organizer: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
