@@ -21,8 +21,8 @@ app.use(cors({
    //origin: 'http://127.0.0.1:5173',
    origin: 'https://fe-eventmgmt-portal.netlify.app',
   credentials: true,                // Enables passing secure HTTP-Only cookies
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
+  //methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  //allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
 
