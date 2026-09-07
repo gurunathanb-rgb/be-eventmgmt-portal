@@ -24,7 +24,7 @@ const allowedOrigins = [
   //'http://127.0.0.1:5173',
   //'http://localhost:3001',
   //'http://127.0.0.1:3001',
-  'https://fe-eventmgmt-portal.netlify.app'
+  'https://fe-eventmgmt-portal.netlify.app/api'
 ];
 
 // 2. Global System Middlewares
