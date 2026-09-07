@@ -1,71 +1,331 @@
-## Setting online Event Management Portal
+# Online Event Management Portal – Backend
 
-This is a Online Event Management Portal , this is built using React for the frontend and Node.js with Express for the backend. The application allows user in organizing and managing events with features for event listings, ticket sales, and attendee registration
+This is the backend application for an **Online Event Management Portal**, developed using **Node.js, Express.js, and MongoDB**.
 
-Implement tools for providing event schedules, and offering event analytics to support event planning.
+The backend provides REST APIs for user authentication, event management, event approval, ticket booking, payment processing, attendee management, support inquiries, feedback management, email notifications, and event analytics.
 
-# Features
+The system supports three types of users:
 
-# Type of Users
-Admin, Event Organizer, Attendees
+- **Admin**
+- **Event Organizer**
+- **Attendee / User**
 
-## User Features
-User Register and Login
-Browse the List of Event
-search and filter the Event using date , location, category and price range
-View and manage their Registration (Cancel and Transfer tickets if necessary)
+---
 
-# Event Organizer
-Allow Event organizer to create and manage the event listing (Mongoose modal: title, description, date, time, location, and ticket pricing)
-search using (date, location, category, and price range)
-Include high-quality images, videos, and detailed descriptions to enhance event listings.
-Option to approving or rejecting the event listing
-Allow organizer to update the event scheduels and notify register attendess through mail for any changes
-To track key metrics such as ticket sales, attendence rates and revenue
-include the graph , charts for data-driven decision
+## Features
 
-## Attendee
-Register for the event and purchase ticket
-cancel the ticket if necesary
+### 1. User Authentication
 
+- User Registration
+- User Login
+- JWT-based authentication
+- Role-based authorization
+- Password encryption using bcrypt
+- User account management
 
-## Admin
-- Admin Login
-- Manage User account (Create, Update, View, Delete)
-- Manage Event Listing (Create, Update, View, Delete)
+---
 
+## 2. Attendee / User Features
 
+- Register and login
+- Browse approved event listings
+- Search events
+- Filter events by:
+  - Date
+  - Location
+  - Category
+  - Price range
+- View event details
+- Select ticket tier and quantity
+- Register for events
+- Purchase event tickets
+- View booking details
+- Cancel tickets
+- Transfer tickets where applicable
+- Submit event feedback
+- Raise support inquiries
+- View support/feedback information
 
-## npm install
+---
+
+## 3. Event Organizer Features
+
+- Create event listings
+- Manage event listings
+- Add event title, description, date, time, location, category, ticket pricing, images, and videos
+- Search and filter event information
+- Submit events for Admin approval
+- View event approval status
+- Update event schedule
+- Notify registered attendees through email when the event schedule changes
+- Track ticket sales
+- Track event revenue
+- View event sales analytics
+- View ticket-tier sales
+- View month-over-month revenue analytics
+- View graphical/chart-based event performance information
+
+---
+
+## 4. Admin Features
+
+### User Management
+
+- View users
+- Create users
+- Update user information
+- Change user roles
+- Delete users
+
+### Event Management
+
+- View pending event listings
+- Review event listings
+- Approve events
+- Reject events
+- View approved events
+- Manage event information
+
+### Attendee Management
+
+- View event attendee information
+- Export event attendees
+- Generate attendee CSV reports
+
+### Booking Management
+
+- View booking information
+- Monitor ticket bookings
+- Monitor payment status
+- Monitor booking status
+
+### Support Management
+
+- View all support inquiries
+- Review support requests
+- Respond to user inquiries
+- Change support status: Open, In Progress, Resolved, or Closed
+
+### Feedback Management
+
+- View attendee feedback
+- Review ratings and comments
+- Respond to feedback
+- Change feedback status: Visible, Hidden, or Flagged
+
+### Platform Analytics
+
+- Total users
+- Total approved events
+- Total tickets sold
+- Total revenue
+- Event category distribution
+
+---
+
+## 5. Payment Integration
+
+The backend supports event ticket payment processing using **Stripe**.
+
+Payment-related functionality includes:
+
+- Ticket payment processing
+- Payment status tracking
+- Stripe session/payment information
+- Booking creation after payment
+- Paid and failed payment status management
+
+---
+
+## 6. Email Notifications
+
+The backend uses **Nodemailer** for email notifications.
+
+Email notifications are used for:
+
+- Event schedule changes
+- Attendee notifications
+- Other event-related communications
+
+---
+
+# Technology Stack
+
+### Backend
+
+- Node.js
+- Express.js
+- MongoDB
+- Mongoose
+
+### Authentication & Security
+
+- JSON Web Token (JWT)
+- bcryptjs
+- CORS
+
+### File Upload
+
+- Multer
+
+### Payment
+
+- Stripe
+
+### Email
+
+- Nodemailer
+
+### Development
+
+- Nodemon
+- dotenv
+
+---
+
+# npm Installation
+
+Install the required backend packages:
+
+```bash
 npm install express mongoose dotenv cors jsonwebtoken bcryptjs multer stripe nodemailer
+```
+
+Install Nodemon as a development dependency:
+
+```bash
 npm install --save-dev nodemon
-npm install -D nodemon 
+```
 
-##backend folder tree
+---
 
+# Backend Application Folder Structure
+
+```text
 backend/
 │
 ├── controllers/
-│   └── eventController.js
+│   ├── adminController.js
+│   ├── authController.js
+│   ├── bookingController.js
+│   ├── eventController.js
+│   ├── feedbackController.js
+│   └── supportController.js
 │
 ├── middleware/
 │   ├── authMiddleware.js
 │   └── uploadMiddleware.js
 │
 ├── models/
-│   ├── Event.js
+│   ├── User.js
 │   ├── Booking.js
-│   └── User.js
+│   ├── Event.js
+│   ├── Feedback.js
+│   └── SupportTicket.js
 │
 ├── routes/
-│   ├── eventRoutes.js
+│   ├── adminRoutes.js
 │   ├── authRoutes.js
-│   └── ...
+│   ├── bookingRoutes.js
+│   ├── eventRoutes.js
+│   ├── feedbackRoutes.js
+│   └── supportRoutes.js
 │
 ├── uploads/
 │   ├── images/
 │   └── videos/
 │
+├── .env
 ├── app.js
-└── server.js
+├── server.js
+└── package.json
+```
 
+---
+
+# User Roles
+
+| Role | Main Responsibilities |
+|---|---|
+| **Admin** | Manage users, events, bookings, support, feedback and platform analytics |
+| **Organizer** | Create and manage events, monitor ticket sales and revenue |
+| **Attendee / User** | Browse events, purchase tickets, manage bookings, submit feedback and support inquiries |
+
+---
+
+# Backend API Modules
+
+The backend APIs are organized into:
+
+- Authentication
+- User Management
+- Event Management
+- Booking Management
+- Payment Processing
+- Admin Management
+- Support Management
+- Feedback Management
+- Event Analytics
+- Attendee Export
+- Email Notifications
+
+---
+
+# Environment Variables
+
+Create a `.env` file in the backend root directory and configure the required environment variables.
+
+Example:
+
+```env
+PORT=3001
+MONGO_URI=your_mongodb_connection_string
+JWT_SECRET=your_jwt_secret
+STRIPE_SECRET_KEY=your_stripe_secret_key
+EMAIL_USER=your_email
+EMAIL_PASS=your_email_password
+```
+
+Do not commit the `.env` file to GitHub.
+
+---
+
+# Running the Backend
+
+Install dependencies:
+
+```bash
+npm install
+```
+
+Start the development server:
+
+```bash
+npm run dev
+```
+
+Or start the server using Node.js:
+
+```bash
+node server.js
+```
+
+---
+
+# Backend Deployment
+
+The backend can be deployed to a cloud platform such as **Render**.
+
+After deployment, the frontend application can communicate with the backend through the deployed REST API.
+
+---
+
+# Project Objective
+
+The objective of this project is to provide a complete online event management platform where:
+
+- Attendees can discover and purchase event tickets.
+- Organizers can create and manage events.
+- Administrators can control users, events, bookings, support inquiries and feedback.
+- Organizers and administrators can monitor event sales and revenue through analytics.
+- Attendees receive notifications when important event information changes.
