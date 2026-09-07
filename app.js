@@ -20,10 +20,10 @@ app.use(express.urlencoded({ extended: true }));
 
 // 🌟 FIX 2: Dynamic CORS origin processing array configuration rules
 const allowedOrigins = [
-  'http://localhost:5173',
-  'http://127.0.0.1:5173',
-  'http://localhost:3001',
-  'http://127.0.0.1:3001',
+  //'http://localhost:5173',
+  //'http://127.0.0.1:5173',
+  //'http://localhost:3001',
+  //'http://127.0.0.1:3001',
   'https://fe-eventmgmt-portal.netlify.app'
 ];
 
